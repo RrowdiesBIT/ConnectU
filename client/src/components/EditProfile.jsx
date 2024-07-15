@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useForm } from 'react-hook-form';
-import { UpdateProfile } from "../redux/userSlice.js";
+import { UpdateProfile, UserLogin } from "../redux/userSlice.js";
 import TextInput from "./TextInput";
 import Loading from "./Loading.jsx";
 import CustomButton from "./CustomButton.jsx";
 import { MdClose } from "react-icons/md";
+import { apiRequest, handleFileUpload } from '../utils/index.js';
 
 const EditProfile = () => {
 
@@ -25,13 +26,53 @@ const EditProfile = () => {
   });
 
 
-  const onSubmit = async (data) => {};
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    setErrMsg("");
+    try {
+      const uri  = picture && (await handleFileUpload(picture));
+      const {firstName, lastName, location, profession} = data;
+
+      const res = await apiRequest({
+        url: "/users/update-user",
+        data: {
+          firstName,
+          lastName,
+          location,
+          profession,
+          profileUrl: uri ? uri : user?.profileUrl,
+        },
+        method: "PUT",
+        token: user?.token,
+      });
+
+      if(res?.status === "failed"){
+        setErrMsg(res);
+        window.alert(res.message);
+      }else{
+        setErrMsg(res);
+        const newUser = {token:res?.token, ...res?.user};
+        dispatch(UserLogin(newUser));
+
+        setTimeout(()=> {
+          dispatch(UpdateProfile(false));
+        },2000);
+      }
+      setIsSubmitting(false);
+
+    } catch (error) {
+      console.log(error);
+      window.alert(error);
+      setIsSubmitting(false);
+    }
+  };
 
   const handleClose = () => {
     dispatch(UpdateProfile(false));
   };
   const handleSelect = (e) => {
-    setPicture(e.target.files[0]);
+    const file = e.target.files[0];
+    setPicture(file);
   };
   return (
     <>
@@ -116,7 +157,6 @@ const EditProfile = () => {
               >
                 <input
                   type='file'
-                  className=''
                   id='imgUpload'
                   onChange={(e) => handleSelect(e)}
                   accept='.jpg, .png, .jpeg'

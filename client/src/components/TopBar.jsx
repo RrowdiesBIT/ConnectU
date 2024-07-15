@@ -7,10 +7,11 @@ import TextInput from "./TextInput";
 import CustomButton from "./CustomButton";
 import {BsMoon,BsSunFill} from "react-icons/bs"
 import {IoMdNotificationsOutline} from "react-icons/io";
-import { setTheme } from "../redux/theme";
+import { SetTheme } from "../redux/theme";
 import {UserLogout} from "../redux/userSlice";
 import { IoLogOutOutline } from "react-icons/io5";
 import { FaBold } from "react-icons/fa";
+
 
 const TopBar = () => {
   const { theme } = useSelector((state) => state.theme);
@@ -25,7 +26,7 @@ const TopBar = () => {
   const handleTheme = () =>{
     const themeValue = theme === "light" ? "dark" : "light";
 
-    dispatch(setTheme(themeValue));
+    dispatch(SetTheme(themeValue));
   }
   return (
     <div className=" w-full flex flex-row items-center justify-between p-5 md:py-6 bg-gray-300 rounded-2xl shadow-lg ">
@@ -36,7 +37,7 @@ const TopBar = () => {
           </Link>
         </div>
 
-        <span className="text-2xl text-[#065ad8] font-semibold">LinkUp</span>
+        <span className="text-2xl text-[#065ad8] font-semibold">ConnectU</span>
       </div>
       <form className="flex items-center justify-center w-3/5 " onSubmit={handleSubmit(handleSearch)}>
       <TextInput

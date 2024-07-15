@@ -22,17 +22,17 @@ const ProfileCard = ({ user }) => {
       <div className='w-full flex items-center justify-between border-b pb-5 border-[#66666645] bg-gray-200 rounded-xl p-2'>
         <Link to={"/profile/" + user?._id} className='flex gap-2'>
           <img
-            src={user?.profileUrl ?? NoProfile}
-            alt={user?.email}
+            src={user?.user.profileUrl ?? NoProfile}
+            alt={user?.user.email}
             className='w-14 h-14 object-cover rounded-full hover:scale-150 transition-all duration-300'
           />
 
           <div className='flex flex-col justify-center'>
             <p className='text-lg font-medium text-ascent-1'>
-              {user?.firstName} {user?.lastName}
+              {user?.user.firstName} {user?.user.lastName}
             </p>
             <span className='text-ascent-2'>
-              {user?.profession ?? "No Profession"}
+              {user?.user.profession ?? "No Profession"}
             </span>
           </div>
         </Link>
@@ -58,28 +58,28 @@ const ProfileCard = ({ user }) => {
       <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
         <div className='flex gap-2 items-center text-ascent-2'>
           <CiLocationOn className='text-xl text-ascent-1' />
-          <span>{user?.location ?? "Add Location"}</span>
+          <span>{user?.user.location ?? "Add Location"}</span>
         </div>
 
         <div className='flex gap-2 items-center text-ascent-2'>
           <BsBriefcase className=' text-lg text-ascent-1' />
-          <span>{user?.profession ?? "Add Profession"}</span>
+          <span>{user?.user.profession ?? "Add Profession"}</span>
         </div>
       </div>
 
       <div className='w-full flex flex-col gap-2 py-4 border-b border-[#66666645]'>
         <p className='text-xl text-ascent-1 font-semibold'>
-          {user?.friends?.length} Friends
+          {user?.user.friends?.length} Friends
         </p>
 
         <div className='flex items-center justify-between'>
           <span className='text-ascent-2'>Who viewed your profile</span>
-          <span className='text-ascent-1 text-lg'>{user?.views?.length}</span>
+          <span className='text-ascent-1 text-lg'>{user?.user.views?.length}</span>
         </div>
 
         <div className="flex gap-2 items-center text-ascent-2">
         <span className='text-base text-blue-500'>
-          {user?.verified ? ( "Verified Account" ) : ("Not Verified")}
+          {user?.user.verified ? ( "Verified Account" ) : ("Not Verified")}
         </span>
         <span className='text-base text-blue-500'>
           {user?.verified ? (<span><MdOutlineVerifiedUser/></span> ) : ("")}
@@ -91,7 +91,7 @@ const ProfileCard = ({ user }) => {
         <div className='flex items-center justify-between'>
           <span className='text-ascent-2'>Joined</span>
           <span className='text-ascent-1 text-base'>
-            {moment(user?.createdAt).fromNow()}
+            {moment(user?.user.createdAt).fromNow()}
           </span>
         </div>
       </div>

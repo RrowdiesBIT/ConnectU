@@ -1,14 +1,12 @@
 import { combineReducers } from "@reduxjs/toolkit";
-
-import userSlice from "./userSlice"
-import themeSlice from "./theme"
-import postSlice from "./postSlice"
+import userSlice from "./userSlice.js";
+import themeSlice from "./theme.js";
+import postSlice from "./postSlice.js";
 
 const rootReducer = combineReducers({
   user: userSlice,
   theme: themeSlice,
   posts: postSlice,
-})
+});
 
-
-export {rootReducer};
+export default rootReducer;

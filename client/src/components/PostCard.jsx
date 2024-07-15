@@ -42,7 +42,7 @@ const ReplyCard = ({reply,user,handleLike}) => {
             className='flex gap-2 items-center text-base text-ascent-2 cursor-pointer'
             onClick={handleLike}
           >
-            {reply?.likes?.includes(user?._id) ? (
+            {reply?.likes?.includes(user?.user._id) ? (
               <BiSolidLike size={20} color='blue' />
             ) : (
               <BiLike size={20} />
@@ -77,7 +77,7 @@ const CommentForm = ({ user, id, replyAt, getComments }) => {
     >
       <div className="w-full flex items-center gap-2 py-4 ">
         <img
-          src={user?.profileUrl ?? NoProfile}
+          src={user?.user.profileUrl ?? NoProfile}
           alt="userImage"
           className="rounded-full w-10 h-10 object-cover"
         />
@@ -123,7 +123,8 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
   const [loading, setLoading] = useState(false);
   const [replyComments, setReplyComments] = useState(0);
   const [showComments, setShowComments] = useState(0);
-
+  // console.log(post);
+ 
   const getComments = async () => {
     setReplyComments(0);
 
@@ -131,7 +132,10 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
     setLoading(false);
   };
 
-  const handleLike = async() => {};
+  const handleLike = async(uri) => {
+    await likePost(uri);
+    await getComments(post?._id);
+  };
 
   return (
     <div className="wb-2 bg-gray-200 rounded-xl p-5">
@@ -193,7 +197,8 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
       </div>
 
       <div className="mt-4 flex justify-between items-center px-3 py-2 text-ascent text-base border-t border-[#66666645]">
-        <p className="flex gap-2 items-center text-base cursor-pointer">
+        <p className="flex gap-2 items-center text-base cursor-pointer"
+        onClick={() => handleLike("/posts/like/" + post?._id)}>
           {post?.likes?.includes(user?._id) ? (
             <BiSolidLike size={20} color="blue" />
           ) : (

@@ -8,12 +8,12 @@ const API_URL = "http://localhost:8800/";
 
 export const API = axios.create({
   baseURL: API_URL,
-  responseType:"JSON"
+  responseType:"json"
 });
 
 export const apiRequest = async({ url, token, data, method}) => {
   try {
-    const result = await API(url, {
+      const result = await API(url, {
       method: method || "GET",
       data: data,
       headers: {
@@ -21,6 +21,8 @@ export const apiRequest = async({ url, token, data, method}) => {
         Authorization: token ? `Bearer ${token}` : "",
       },
     });
+    console.log(result);
+    return (result);
   } catch (error) {
     const err = error.response.data;
     console.log(err);
@@ -28,22 +30,38 @@ export const apiRequest = async({ url, token, data, method}) => {
   }
 }
 
-export const handleFileUpload = async (uploadFile) => {
+
+
+export const handleFileUpload = async (uploadFile, fileType) => {
   const formData = new FormData();
   formData.append("file", uploadFile);
-  formData.append("upload_present","socialmedia");
+  formData.append("upload_preset", "socialmedia");
+  console.log(formData);
+
+  let uploadUrl;
+  switch (fileType) {
+    case 'image':
+      uploadUrl = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_ID}/image/upload`;
+      break;
+    case 'video':
+      uploadUrl = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_ID}/video/upload`;
+      break;
+    case 'gif':
+      uploadUrl = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_ID}/image/upload`;
+      break;
+    default:
+      throw new Error('Unsupported file type');
+  }
 
   try {
-    const response = await axios.post(
-      `https://api.cloudinary.com/v1_1/${import.meta.env.APP_CLOUDINARY_ID}/image/upload/`,
-      formData
-    );
+    const response = await axios.post(uploadUrl, formData);
     return response.data.secure_url;
-
   } catch (error) {
-    console.log(error);
+    console.error("Error uploading file:", error);
+    throw error;
   }
 }
+
 
 export const fetchPosts = async (token,dispatch, uri, data) => {
   try {
@@ -54,8 +72,10 @@ export const fetchPosts = async (token,dispatch, uri, data) => {
         data:data || {},
       });
 
-      dispatch(SetPosts(res?.data));
+      dispatch(SetPosts(res?.data.data));
+      // console.log(res.data.data);
       return;
+     
   } catch (error) {
     console.log(error);
   }
@@ -96,14 +116,13 @@ export const getUserInfo = async ({token,id}) => {
       token: token,
       method: "POST",
     });
-
     if(res?.message === "Authentication failed"){
       localStorage.removeItem("user");
       window.alert("User session expired Login Again");
       window.location.replace("/login");
     }
-
     return;
+   
 
   } catch (error) {
     console.log(error);

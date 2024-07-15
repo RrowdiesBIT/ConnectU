@@ -10,6 +10,7 @@ import bgImg from "../img/bgImg.jpeg";
 import { apiRequest } from "../utils/index.js";
 import { UserLogin } from "../redux/userSlice.js";
 import swal from 'sweetalert';
+import store from "../redux/store.js";
 
 const Login = () => {
   // const {user,edit} = useSelector((state) => state.user);
@@ -25,7 +26,7 @@ const Login = () => {
     mode: "onChange",
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async  (data) => {
     setIsSubmitting(true);
     try {
       const res = await apiRequest({
@@ -35,18 +36,19 @@ const Login = () => {
       });
       console.log(res);
       if (res?.status === "failed") {
-        setErrMsg(res);
+        setErrMsg(res.message);
         window.alert(errMsg.message);
-        
       } else {
         setErrMsg("");
 
-        const newData = {token: res?.token, ...res?.user};
+        const newData = {token: res?.token, ...res?.data};
+        
+
         dispatch(UserLogin(newData));
         swal("Login Successfully","Keep Connecting","Success");
         setTimeout(() => {
           window.location.replace("/");
-        },5000)
+        },1000)
         
       }
       setIsSubmitting(false);
